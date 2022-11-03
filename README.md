@@ -1,2 +1,1 @@
-# quickstarts
-Testcontainers QuickStarts
+# Testcontainers QuickStarts
