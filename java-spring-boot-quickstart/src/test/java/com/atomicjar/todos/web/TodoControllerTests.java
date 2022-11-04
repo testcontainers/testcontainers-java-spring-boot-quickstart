@@ -4,6 +4,8 @@ import com.atomicjar.todos.entity.Todo;
 import com.atomicjar.todos.repository.TodoRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,18 @@ public class TodoControllerTests {
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14-alpine");
 
+    @BeforeAll
+    static void beforeAll() {
+        postgres.start();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        postgres.stop();
+    }
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        postgres.start();
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);

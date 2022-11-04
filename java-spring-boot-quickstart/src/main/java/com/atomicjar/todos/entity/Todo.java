@@ -1,5 +1,6 @@
 package com.atomicjar.todos.entity;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.*;
@@ -7,8 +8,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "todos")
 public class Todo {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -22,18 +25,18 @@ public class Todo {
     public Todo() {
     }
 
-    public Todo(Long id, String title, Boolean completed, Integer order) {
+    public Todo(String id, String title, Boolean completed, Integer order) {
         this.id = id;
         this.title = title;
         this.completed = completed;
         this.order = order;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

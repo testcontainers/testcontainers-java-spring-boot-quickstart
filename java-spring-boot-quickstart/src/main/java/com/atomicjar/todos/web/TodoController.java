@@ -23,7 +23,7 @@ public class TodoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Todo> getById(@PathVariable Long id) {
+    public ResponseEntity<Todo> getById(@PathVariable String id) {
         return repository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new TodoNotFoundException(id));
@@ -40,7 +40,7 @@ public class TodoController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Todo> update(@PathVariable Long id, @Valid @RequestBody Todo todo) {
+    public ResponseEntity<Todo> update(@PathVariable String id, @Valid @RequestBody Todo todo) {
         Todo existingTodo = repository.findById(id).orElseThrow(() -> new TodoNotFoundException(id));
         if(todo.getCompleted() != null) {
             existingTodo.setCompleted(todo.getCompleted());
@@ -56,7 +56,7 @@ public class TodoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable String id) {
         Todo todo = repository.findById(id).orElseThrow(() -> new TodoNotFoundException(id));
         repository.delete(todo);
         return ResponseEntity.ok().build();
