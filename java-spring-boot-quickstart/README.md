@@ -1,9 +1,17 @@
 # Testcontainers SpringBoot Quickstart
 This quick starter will guide you to configure and use Testcontainers in a SpringBoot project.
 
-## 1. SetUp Environment
-Make sure you have Java 8+ and Docker installed.
+In this guide we'll look at a sample Spring Boot application which uses Testcontainers for running unit tests with real dependencies.
+The initial implementation uses a relation database for storing data. 
+We'll look at the necessary parts of the code that integrates Testcontainers into the app. 
+Then we'll switch the relation database for MongoDB, and guide you through using Testcontainers for testing the app against a real instance of MongoDB running in a container. 
 
+After the quick start you'll have a working Spring Boot app with Testcontainers based tests, and will be ready to explore integrations with other databases and other technologies via Testcontainers. 
+
+## 1. Setup Environment
+Make sure you have Java 8+ and a [compatible Docker environment](https://www.testcontainers.org/supported_docker_environment/) installed.
+
+For example: 
 ```shell
 $ java -version
 openjdk version "17.0.4" 2022-07-19
@@ -11,41 +19,30 @@ OpenJDK Runtime Environment Temurin-17.0.4+8 (build 17.0.4+8)
 OpenJDK 64-Bit Server VM Temurin-17.0.4+8 (build 17.0.4+8, mixed mode, sharing)
 
 $ docker version
-Client:
- Cloud integration: v1.0.29
- Version:           20.10.17
- API version:       1.41
- Go version:        go1.17.11
- Git commit:        100c701
- Built:             Mon Jun  6 23:04:45 2022
- OS/Arch:           darwin/amd64
- Context:           default
- Experimental:      true
-
+... 
 Server: Docker Desktop 4.12.0 (85629)
  Engine:
   Version:          20.10.17
   API version:      1.41 (minimum version 1.12)
   Go version:       go1.17.11
-  Git commit:       a89b842
-  Built:            Mon Jun  6 23:01:23 2022
-  OS/Arch:          linux/amd64
-  Experimental:     false
-  ...
+...
 ```
-## 2. SetUp Project
-* Clone the repository `git clone https://github.com/testcontainers/quickstarts.git`
-* Open **java-spring-boot-quickstart** project in your favorite IDE
+## 2. Setup Project
+* Clone the repository `git clone https://github.com/testcontainers/quickstarts.git && cd quickstarts/java-spring-boot-quickstart`
+* Open the **java-spring-boot-quickstart** project in your favorite IDE. 
 
 ## 3. Run Tests
+Run the Gradle `test` command to run the tests. The sample project uses JUnit tests and Testcontainers to run them against actual databases running in containers.
 
 ```shell
 $ java-spring-boot-quickstart> ./gradlew test 
 ```
 
+The tests should pass. 
+
 ## 4. Let's explore the code
 The **java-spring-boot-quickstart** project is a SpringBoot REST API using Java 17, Spring Data JPA, PostgreSQL and Gradle.
-We are using JUnit 5, Testcontainers, RestAssured for testing.
+We are using [JUnit 5](https://junit.org/junit5/), [Testcontainers](https://testcontainers.org) and [RestAssured](https://rest-assured.io/) for testing.
 
 ### 4.1. Test Dependencies
 Following are the Testcontainers and RestAssured dependencies:
@@ -53,7 +50,7 @@ Following are the Testcontainers and RestAssured dependencies:
 **build.gradle**
 ```groovy 
 ext {
-    set('testcontainersVersion', "1.17.4")
+    set('testcontainersVersion', "1.17.5")
 }
 
 dependencies {
@@ -135,6 +132,7 @@ Here we have defined a `PostgreSQLContainer` instance, started container before 
 > If you are using any different Testing library like TestNG or Spock then you can use similar lifecycle callback methods provided by that testing library.
 
 The Postgresql container port (5432) will be mapped to a random available port on host.
+This helps to avoid port conflicts and allows running tests in parallel. 
 Then we are using SpringBoot's dynamic property registration support to add/override the datasource properties obtained from Postgres container .
 
 ```java
@@ -152,7 +150,7 @@ You can run the tests directly from IDE or using the command `./gradlew test` fr
 
 ### 4.3. Using Testcontainers JUnit 5 Extension
 Instead of implementing JUnit 5 lifecycle callback methods to start and stop Postgres container,
-we can use Testcontainers JUnit 5 Extension annotations to manage the container lifecycle as follows:
+we can use [Testcontainers JUnit 5 Extension annotations](https://www.testcontainers.org/quickstart/junit_5_quickstart/) to manage the container lifecycle as follows:
 
 ```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -181,7 +179,7 @@ If it is non-static field then container will be started before each test and st
 
 
 ### 4.5. Using magical Testcontainers JDBC URL
-Testcontainers provides the **special jdbc url** support which automatically spin up the configured database as a container.
+Testcontainers provides the [**special jdbc url** support](https://www.testcontainers.org/modules/databases/jdbc/) which automatically spin up the configured database as a container.
 
 ```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -202,10 +200,12 @@ Testcontainers automatically spin up Postgres database using `postgresql:14-alpi
 For more information on Testcontainers JDBC Support refer https://www.testcontainers.org/modules/databases/jdbc/
 
 ## 5. Switch to MongoDB
-There are several tests in `TodoControllerTests` class for testing various API endpoints.
-These tests enable the developers to enhance or refactor the code without breaking the API contracts.
+Let's explore how Testcontainers allow using other technologies in your unit tests. 
+In this chapter we'll switch the application to use MongoDB as it's data store, and will adapt the tests accordingly.
 
-Imagine for some reason we wanted to switch from Postgres to MongoDB.
+The application has several tests in the `TodoControllerTests` class for testing various API endpoints.
+These high level tests enable the developers to enhance or refactor the code without breaking the API contracts.
+
 Let us see how we can switch to MongoDB and use Testcontainers `MongoDBContainer` to ensure API endpoints are not broken and are working as expected.
 
 ### 5.1. Switch to MongoDB and Spring Data Mongo
@@ -213,7 +213,7 @@ Following are the changes to use MongoDB instead of Postgres.
 
 #### 5.1.1. Update dependencies in `build.gradle`
 * Remove `spring-boot-starter-data-jpa`, `flyway-core`, `postgresql`, `org.testcontainers:postgresql` dependencies.
-* Add following dependencies
+* Add the following dependencies: 
     
     ```groovy
     dependencies {
@@ -240,6 +240,7 @@ public class Todo {
     private Boolean completed;
     private Integer order;
     //setter & getters
+   ...
 }
 ```
 #### 5.1.4. Update `TodoControllerTests.java`
@@ -285,7 +286,7 @@ class ApplicationTests {
 }
 ```
 
-We have made all the changes to migrate from Postgres to MongoDB. Let us verify by running tests.
+We have made all the changes to migrate from Postgres to MongoDB. Let us verify it by running tests.
 
 ```shell
 $ ./gradlew test
@@ -294,6 +295,6 @@ $ ./gradlew test
 All tests should PASS.
 
 ## Conclusion
-Testcontainers enable using the real dependent services like SQL databases, NoSQL datastores, message brokers
-(any dockerizable services for that matter) instead of using mocks. 
-This will allow the developer to create high quality TestSuite which gives more confidence in our tests.
+Testcontainers enable using the real dependency services like SQL databases, NoSQL datastores, message brokers
+or any containerized services for that matter.  
+This approach allows you to create reliable test suites improving confidence in your code.
