@@ -45,12 +45,13 @@ $ java-spring-boot-quickstart> ./gradlew test
 
 ## 4. Let's explore the code
 The **java-spring-boot-quickstart** project is a SpringBoot REST API using Java 17, Spring Data JPA, PostgreSQL and Gradle.
-We are using JUnit 5, Testcontainers, RestAssured along with Spring Testing support for testing.
+We are using JUnit 5, Testcontainers, RestAssured for testing.
 
 ### 4.1. Test Dependencies
 Following are the Testcontainers and RestAssured dependencies:
 
-```shell
+**build.gradle**
+```groovy 
 ext {
     set('testcontainersVersion', "1.17.4")
 }
@@ -71,7 +72,7 @@ dependencyManagement {
 ```
 
 ### 4.2. How to use Testcontainers?
-We can use Testcontainers library to spin up desired services as docker containers and run tests against those services.
+Testcontainers library can be used to spin up desired services as docker containers and run tests against those services.
 We can use our testing library lifecycle hooks to start/stop containers using Testcontainers API.
 
 ```java
@@ -129,7 +130,8 @@ public class TodoControllerTests {
 
 Here we have defined a `PostgreSQLContainer` instance, started container before executing tests and stopped after executing all the tests using JUnit 5 test lifecycle hook methods.
 
-> **Note:** If you are using any different Testing library like TestNG or Spock, they also provide similar lifecycle callback methods.
+> **Note**
+> If you are using any different Testing library like TestNG or Spock then you can use similar lifecycle callback methods provided by that testing library.
 
 The Postgresql container port (5432) will be mapped to a random available port on host.
 Then we are using SpringBoot's dynamic property registration support to add/override the datasource properties obtained from Postgres container .
@@ -167,9 +169,13 @@ public class TodoControllerTests {
 }
 ```
 
-The Testcontainers JUnit 5 Extension will take care of starting the container before tests and stopping it after tests.
+> **Note:**
+> The Testcontainers JUnit 5 Extension will take care of starting the container before tests and stopping it after tests.
 If the container is a `static` field then it will be started once before all the tests and stopped after all the tests.
 If it is non-static field then container will be started before each test and stopped after each test.
+>
+> Even if you don't stop the containers explicitly, Testcontainers will take care of removing the containers, using ryuk container behind the scenes, once all the tests are done.
+> But it is recommended to clean up the containers as soon as possible.
 
 ### 4.5. Using magical Testcontainers JDBC URL
 Testcontainers provides the **special jdbc url** support which automatically spin up the configured database as a container.
