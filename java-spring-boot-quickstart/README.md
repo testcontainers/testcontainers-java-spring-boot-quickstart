@@ -2,7 +2,7 @@
 This quick starter will guide you to configure and use Testcontainers in a SpringBoot project.
 
 ## 1. SetUp Environment
-Make sure you have Java 17 and Docker installed.
+Make sure you have Java 8+ and Docker installed.
 
 ```shell
 $ java -version
@@ -61,7 +61,7 @@ dependencies {
     ...
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'io.rest-assured:spring-mock-mvc'
+    testImplementation 'io.rest-assured:rest-assured'
 }
 
 dependencyManagement {

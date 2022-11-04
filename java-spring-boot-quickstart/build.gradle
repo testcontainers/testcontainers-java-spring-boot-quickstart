@@ -31,7 +31,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'io.rest-assured:spring-mock-mvc'
+    testImplementation 'io.rest-assured:rest-assured'
 }
 
 dependencyManagement {
