@@ -290,7 +290,7 @@ $ ./gradlew test
 
 All tests should PASS.
 
-## Summary
+## Conclusion
 Testcontainers enable using the real dependent services like SQL databases, NoSQL datastores, message brokers
 (any dockerizable services for that matter) instead of using mocks. 
 This will allow the developer to create high quality TestSuite which gives more confidence in our tests.
