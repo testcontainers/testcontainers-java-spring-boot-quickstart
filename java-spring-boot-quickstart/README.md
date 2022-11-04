@@ -215,7 +215,7 @@ Following are the changes to use MongoDB instead of Postgres.
 * Remove `spring-boot-starter-data-jpa`, `flyway-core`, `postgresql`, `org.testcontainers:postgresql` dependencies.
 * Add following dependencies
     
-    ```shell
+    ```groovy
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
         testImplementation 'org.testcontainers:mongodb'
@@ -228,7 +228,7 @@ Delete flyway migrations under `src/main/resources/db/migration` folder.
 #### 5.1.3. Update `Todo.java`
 Update `Todo.java` which is currently a JPA entity to represent a Mongo Document using Spring Data Mongo as follows:
     
-```shell
+```java
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
