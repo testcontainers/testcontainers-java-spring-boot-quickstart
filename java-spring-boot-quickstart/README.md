@@ -131,6 +131,7 @@ public class TodoControllerTests {
 Here we have defined a `PostgreSQLContainer` instance, started container before executing tests and stopped after executing all the tests using JUnit 5 test lifecycle hook methods.
 
 > **Note**
+> 
 > If you are using any different Testing library like TestNG or Spock then you can use similar lifecycle callback methods provided by that testing library.
 
 The Postgresql container port (5432) will be mapped to a random available port on host.
@@ -169,13 +170,15 @@ public class TodoControllerTests {
 }
 ```
 
-> **Note:**
+> **Note**
+> 
 > The Testcontainers JUnit 5 Extension will take care of starting the container before tests and stopping it after tests.
 If the container is a `static` field then it will be started once before all the tests and stopped after all the tests.
 If it is non-static field then container will be started before each test and stopped after each test.
 >
 > Even if you don't stop the containers explicitly, Testcontainers will take care of removing the containers, using ryuk container behind the scenes, once all the tests are done.
 > But it is recommended to clean up the containers as soon as possible.
+
 
 ### 4.5. Using magical Testcontainers JDBC URL
 Testcontainers provides the **special jdbc url** support which automatically spin up the configured database as a container.
