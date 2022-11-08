@@ -28,7 +28,7 @@ Server: Docker Desktop 4.12.0 (85629)
 ...
 ```
 ## 2. Setup Project
-* Clone the repository `git clone https://github.com/testcontainers/quickstarts.git && cd quickstarts/java-spring-boot-quickstart`
+* Clone the repository `git clone https://github.com/testcontainers/java-spring-boot-quickstart.git && cd java-spring-boot-quickstart`
 * Open the **java-spring-boot-quickstart** project in your favorite IDE.
 
 ## 3. Run Tests
