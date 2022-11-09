@@ -10,6 +10,7 @@ After the quick start, you'll have a working Spring Boot app with Testcontainers
 
 ## 1. Setup Environment
 Make sure you have Java 8+ and a [compatible Docker environment](https://www.testcontainers.org/supported_docker_environment/) installed.
+If you are going to use Maven build tool then make sure Java 17+ is installed.
 
 For example:
 ```shell
@@ -28,20 +29,22 @@ Server: Docker Desktop 4.12.0 (85629)
 ...
 ```
 ## 2. Setup Project
-* Clone the repository `git clone https://github.com/testcontainers/java-spring-boot-quickstart.git && cd java-spring-boot-quickstart`
-* Open the **java-spring-boot-quickstart** project in your favorite IDE.
+* Clone the repository `git clone https://github.com/testcontainers/testcontainers-java-spring-boot-quickstart.git && cd testcontainers-java-spring-boot-quickstart`
+* Open the **testcontainers-java-spring-boot-quickstart** project in your favorite IDE.
 
 ## 3. Run Tests
-Run the Gradle `test` command to run the tests. The sample project uses JUnit tests and Testcontainers to run them against actual databases running in containers.
+The sample project uses JUnit tests and Testcontainers to run them against actual databases running in containers.
 
+Run the command to run the tests.
 ```shell
-$ java-spring-boot-quickstart> ./gradlew test 
+$ ./gradlew test //for Gradle
+$ ./mvnw verify  //for Maven
 ```
 
 The tests should pass.
 
 ## 4. Let's explore the code
-The **java-spring-boot-quickstart** project is a SpringBoot REST API using Java 17, Spring Data JPA, PostgreSQL, and Gradle.
+The **testcontainers-java-spring-boot-quickstart** project is a SpringBoot REST API using Java 17, Spring Data JPA, PostgreSQL, and Gradle/Maven.
 We are using [JUnit 5](https://junit.org/junit5/), [Testcontainers](https://testcontainers.org) and [RestAssured](https://rest-assured.io/) for testing.
 
 ### 4.1. Test Dependencies
@@ -66,6 +69,51 @@ dependencyManagement {
         mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
     }
 }
+```
+
+For Maven build the Testcontainers and RestAssured dependencies are configured in **pom.xml** as follows:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <properties>
+    ...
+    ...
+    <testcontainers.version>1.17.5</testcontainers.version>
+  </properties>
+  <dependencies>
+    ...
+    ...
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
 ```
 
 ### 4.2. How to use Testcontainers?
@@ -214,7 +262,8 @@ Following are the changes to use MongoDB instead of Postgres.
 #### 5.1.1. Update dependencies in `build.gradle`
 * Remove `spring-boot-starter-data-jpa`, `flyway-core`, `postgresql`, `org.testcontainers:postgresql` dependencies.
 * Add the following dependencies:
-
+    
+    * If you are using Gradle
     ```groovy
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
@@ -222,6 +271,20 @@ Following are the changes to use MongoDB instead of Postgres.
     }
     ```
 
+  * If you are using Maven
+    ```xml
+    <dependencies>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-mongodb</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.testcontainers</groupId>
+          <artifactId>mongodb</artifactId>
+          <scope>test</scope>
+      </dependency>
+    </dependencies>
+    ```
 #### 5.1.2. Delete flyway migrations
 Delete flyway migrations under `src/main/resources/db/migration` folder.
 
@@ -290,11 +353,11 @@ We have made all the changes to migrate from Postgres to MongoDB. Let us verify 
 
 ```shell
 $ ./gradlew test
+$ ./mvnw verify
 ```
 
 All tests should PASS.
 
 ## Conclusion
 Testcontainers enable using the real dependency services like SQL databases, NoSQL datastores, message brokers
-or any containerized services for that matter.  
-This approach allows you to create reliable test suites improving confidence in your code.
+or any containerized services for that matter. This approach allows you to create reliable test suites improving confidence in your code.
