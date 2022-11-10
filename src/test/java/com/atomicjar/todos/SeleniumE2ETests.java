@@ -35,7 +35,7 @@ public class SeleniumE2ETests {
     @TempDir
     static File tempDir;
 
-    static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>()
+    static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>("selenium/standalone-chrome:4.1.4")
             .withAccessToHost(true)
             .withRecordingMode(VncRecordingMode.RECORD_ALL, tempDir)
             .withRecordingFileFactory(new DefaultRecordingFileFactory())
