@@ -31,7 +31,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:selenium'
     testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.6.0'
 }
 
 dependencyManagement {
