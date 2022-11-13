@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<testcontainers.version>1.17.5</testcontainers.version>
+		<selenium.version>4.6.0</selenium.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -63,7 +64,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-chrome-driver</artifactId>
-			<version>4.6.0</version>
+			<version>${selenium.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

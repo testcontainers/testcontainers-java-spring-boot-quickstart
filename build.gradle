@@ -20,6 +20,7 @@ repositories {
 
 ext {
     set('testcontainersVersion', "1.17.4")
+    set('selenium.version', "4.6.0")
 }
 
 dependencies {

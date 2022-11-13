@@ -12,10 +12,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode;
 import org.testcontainers.containers.DefaultRecordingFileFactory;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.TestDescription;
 
 import java.io.File;
@@ -27,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
         "spring.datasource.url=jdbc:tc:postgresql:14-alpine:///todos"
 })
+@Testcontainers
 public class SeleniumE2ETests {
 
     @LocalServerPort
@@ -35,28 +37,29 @@ public class SeleniumE2ETests {
     @TempDir
     static File tempDir;
 
-    static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>("selenium/standalone-chrome:4.1.4")
+    @Container
+    static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>("selenium/standalone-chrome:4.6.0")
             .withAccessToHost(true)
             .withRecordingMode(VncRecordingMode.RECORD_ALL, tempDir)
             .withRecordingFileFactory(new DefaultRecordingFileFactory())
             .withCapabilities(new ChromeOptions())
             ;
+    static RemoteWebDriver driver;
 
     @BeforeAll
     static void beforeAll() {
-        chrome.start();
+        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
     }
 
     @AfterAll
     static void afterAll() {
         saveVideoRecording();
-        chrome.stop();
+        driver.quit();
     }
 
     @Test
     void testAddTodo() {
-        RemoteWebDriver driver = chrome.getWebDriver();
-        Testcontainers.exposeHostPorts(localPort);
+        org.testcontainers.Testcontainers.exposeHostPorts(localPort);
         String baseUrl = "http://host.testcontainers.internal:" + localPort;
         String apiUrl = baseUrl + "/todos";
         driver.get(baseUrl + "/?" + apiUrl);
