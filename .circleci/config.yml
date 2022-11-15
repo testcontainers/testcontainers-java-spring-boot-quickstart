@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  maven: circleci/maven@1.4.0
   gradle: circleci/gradle@3.0.0
+  maven: circleci/maven@1.4.0
   tcc: atomicjar/testcontainers-cloud-orb@0.1.0
 executors:
   jdk17:
