@@ -1,0 +1,21 @@
+version: 2.1
+orbs:
+  gradle: circleci/gradle@3.0.0
+  maven: circleci/maven@1.4.0
+  tcc: atomicjar/testcontainers-cloud-orb@0.1.0
+executors:
+  jdk17:
+    docker:
+      - image: cimg/openjdk:17.0
+workflows:
+  build_and_test:
+    jobs:
+      - maven/test:
+          command: 'verify'
+          executor: jdk17
+          pre-steps:
+            - tcc/setup
+      - gradle/test:
+          executor: jdk17
+          pre-steps:
+            - tcc/setup
