@@ -53,7 +53,7 @@ Following are the Testcontainers and RestAssured dependencies:
 **build.gradle**
 ```groovy 
 ext {
-    set('testcontainersVersion', "1.17.5")
+    set('testcontainersVersion', "1.17.6")
 }
 
 dependencies {
@@ -81,7 +81,7 @@ For Maven build the Testcontainers and RestAssured dependencies are configured i
   <properties>
     ...
     ...
-    <testcontainers.version>1.17.5</testcontainers.version>
+    <testcontainers.version>1.17.6</testcontainers.version>
   </properties>
   <dependencies>
     ...
