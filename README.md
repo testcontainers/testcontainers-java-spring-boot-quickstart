@@ -53,7 +53,7 @@ Following are the Testcontainers and RestAssured dependencies:
 **build.gradle**
 ```groovy 
 ext {
-    set('testcontainersVersion', "1.17.6")
+    set('testcontainersVersion', "1.18.1")
 }
 
 dependencies {
@@ -81,7 +81,7 @@ For Maven build the Testcontainers and RestAssured dependencies are configured i
   <properties>
     ...
     ...
-    <testcontainers.version>1.17.6</testcontainers.version>
+    <testcontainers.version>1.18.1</testcontainers.version>
   </properties>
   <dependencies>
     ...
@@ -126,7 +126,7 @@ public class TodoControllerTests {
     @LocalServerPort
     private Integer port;
 
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14-alpine");
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
 
     @BeforeAll
     static void beforeAll() {
@@ -205,7 +205,7 @@ we can use [Testcontainers JUnit 5 Extension annotations](https://www.testcontai
 @Testcontainers
 public class TodoControllerTests {
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:14-alpine");
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -232,7 +232,7 @@ Testcontainers provides the [**special jdbc url** support](https://www.testconta
 ```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {
-    "spring.datasource.url=jdbc:tc:postgresql:14-alpine:///todos"
+    "spring.datasource.url=jdbc:tc:postgresql:15-alpine:///todos"
 })
 class ApplicationTests {
 
@@ -242,8 +242,8 @@ class ApplicationTests {
 }
 ```
 
-By setting the datasource url to `jdbc:tc:postgresql:14-alpine:///todos` (notice the special `:tc` prefix),
-Testcontainers automatically spin up the Postgres database using `postgresql:14-alpine` docker image.
+By setting the datasource url to `jdbc:tc:postgresql:15-alpine:///todos` (notice the special `:tc` prefix),
+Testcontainers automatically spin up the Postgres database using `postgresql:15-alpine` docker image.
 
 For more information on Testcontainers JDBC Support refer https://www.testcontainers.org/modules/databases/jdbc/
 

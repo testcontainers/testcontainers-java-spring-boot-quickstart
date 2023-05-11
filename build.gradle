@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.0.6'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
@@ -19,8 +19,8 @@ repositories {
 }
 
 ext {
-    set('testcontainersVersion', "1.17.6")
-    set('selenium.version', "4.6.0")
+    set('testcontainersVersion', "1.18.1")
+    set('seleniumVersion', "4.6.0")
 }
 
 dependencies {
@@ -34,7 +34,7 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.testcontainers:selenium'
     testImplementation 'io.rest-assured:rest-assured'
-    testImplementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.6.0'
+    testImplementation "org.seleniumhq.selenium:selenium-chrome-driver:${seleniumVersion}"
 }
 
 dependencyManagement {
