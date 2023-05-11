@@ -59,6 +59,8 @@ ext {
 dependencies {
     ...
     ...
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'io.rest-assured:rest-assured'
@@ -86,6 +88,16 @@ For Maven build the Testcontainers and RestAssured dependencies are configured i
   <dependencies>
     ...
     ...
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>junit-jupiter</artifactId>
@@ -247,7 +259,110 @@ Testcontainers automatically spin up the Postgres database using `postgresql:15-
 
 For more information on Testcontainers JDBC Support refer https://www.testcontainers.org/modules/databases/jdbc/
 
-## 5. Switch to MongoDB
+### 4.6. Using Spring Boot 3.1.0 @ServiceConnection
+Spring Boot 3.1.0 introduced better support for Testcontainers that simplifies test configuration greatly.
+Instead of registering the postgres database connection properties using `@DynamicPropertySource`,
+we can use `@ServiceConnection` to register the Database connection as follows:
+
+```java
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
+public class TodoControllerTests {
+    @Container
+    @ServiceConnection
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
+
+    @Test
+    void test() {
+      ...
+    }
+}
+```
+
+
+## 5. Local Development using Testcontainers
+Spring Boot 3.1.0 introduced support for using Testcontainers at development time.
+You can configure your Spring Boot application to automatically start the required docker containers.
+
+First, create a configuration class to define the required containers as follows:
+
+```java
+@TestConfiguration(proxyBeanMethods = false)
+public class ContainersConfig {
+
+    @Bean
+    @ServiceConnection
+    @RestartScope
+    PostgreSQLContainer<?> postgreSQLContainer(){
+        return new PostgreSQLContainer<>("postgres:15-alpine");
+    }
+}
+```
+
+Next, create a `TestApplication` class under `src/test/java` as follows:
+
+```java
+public class TestApplication {
+    public static void main(String[] args) {
+        SpringApplication
+                .from(Application::main)
+                .with(ContainersConfig.class)
+                .run(args);
+    }
+}
+```
+
+Now you can either run `TestApplication` from your IDE or use your build tool to start the application as follows:
+
+```shell
+$ ./gradlew bootTestRun //for Gradle
+$ ./mvnw spring-boot:test-run //for Maven
+```
+
+You can access the application UI at http://localhost:8080 and enter http://localhost:8080/todos as API URL.
+
+### 5.1 Using DevTools with Testcontainers at Development Time
+During development, you can use Spring Boot DevTools to reload the code changes without having to completely restart the application.
+You can also configure your containers to reuse the existing containers by adding `@RefreshScope`.
+
+First, Add `spring-boot-devtools` dependency.
+
+**Gradle**
+
+```groovy
+testImplementation 'org.springframework.boot:spring-boot-devtools'
+```
+
+**Maven**
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+    <optional>true</optional>
+</dependency>
+```
+
+Next, add `@RefreshScope` annotation on container bean definition as follows:
+
+```java
+@TestConfiguration(proxyBeanMethods = false)
+public class ContainersConfig {
+
+    @Bean
+    @ServiceConnection
+    @RestartScope
+    PostgreSQLContainer<?> postgreSQLContainer(){
+        return new PostgreSQLContainer<>("postgres:15-alpine");
+    }
+
+}
+```
+
+Now when devtools reloads your application, the same containers will be reused instead of re-creating them.
+
+## 6. Switch to MongoDB
 Let's explore how Testcontainers allow using other technologies in your unit tests.
 In this chapter, we'll switch the application to use MongoDB as its data store, and will adapt the tests accordingly.
 
@@ -256,10 +371,10 @@ These high-level tests enable the developers to enhance or refactor the code wit
 
 Let us see how we can switch to MongoDB and use Testcontainers `MongoDBContainer` to ensure API endpoints are not broken and are working as expected.
 
-### 5.1. Switch to MongoDB and Spring Data Mongo
+### 6.1. Switch to MongoDB and Spring Data Mongo
 Following are the changes to use MongoDB instead of Postgres.
 
-#### 5.1.1. Update dependencies in `build.gradle`
+#### 6.1.1. Update dependencies in `build.gradle`
 * Remove `spring-boot-starter-data-jpa`, `flyway-core`, `postgresql`, `org.testcontainers:postgresql` dependencies.
 * Add the following dependencies:
     
@@ -285,10 +400,10 @@ Following are the changes to use MongoDB instead of Postgres.
       </dependency>
     </dependencies>
     ```
-#### 5.1.2. Delete flyway migrations
+#### 6.1.2. Delete flyway migrations
 Delete flyway migrations under `src/main/resources/db/migration` folder.
 
-#### 5.1.3. Update `Todo.java`
+#### 6.1.3. Update `Todo.java`
 Update `Todo.java` which is currently a JPA entity to represent a Mongo Document using Spring Data Mongo as follows:
 
 ```java
@@ -306,33 +421,24 @@ public class Todo {
    ...
 }
 ```
-#### 5.1.4. Update `TodoControllerTests.java`
+#### 6.1.4. Update `TodoControllerTests.java`
 Update `TodoControllerTests.java` to use `MongoDBContainer` instead of `PostgreSQLContainer`.
 
 ```java
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 class TodoControllerTest {
-  static MongoDBContainer mongodb = new MongoDBContainer("mongo:4.0.10");
 
-  @BeforeAll
-  static void beforeAll() {
-    mongodb.start();
-  }
+  @Container
+  @ServiceConnection
+  static MongoDBContainer mongodb = new MongoDBContainer("mongo:6.0.5");
 
-  @AfterAll
-  static void afterAll() {
-    mongodb.stop();
-  }
-
-  @DynamicPropertySource
-  static void configureProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.data.mongodb.uri", mongodb::getReplicaSetUrl);
-  }
   // tests
 }
 ```
 
-#### 5.1.5. Update `ApplicationTests.java`
+#### 6.1.5. Update `ApplicationTests.java`
 Update `ApplicationTests.java` to run MongoDB container using JUnit5 Extension.
 
 ```java
@@ -340,6 +446,7 @@ Update `ApplicationTests.java` to run MongoDB container using JUnit5 Extension.
 @Testcontainers
 class ApplicationTests {
   @Container
+  @ServiceConnection
   static MongoDBContainer mongodb = new MongoDBContainer("mongo:4.0.10");
 
   @Test
