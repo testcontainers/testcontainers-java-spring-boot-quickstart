@@ -447,7 +447,7 @@ Update `ApplicationTests.java` to run MongoDB container using JUnit5 Extension.
 class ApplicationTests {
   @Container
   @ServiceConnection
-  static MongoDBContainer mongodb = new MongoDBContainer("mongo:4.0.10");
+  static MongoDBContainer mongodb = new MongoDBContainer("mongo:6.0.5");
 
   @Test
   void contextLoads() {
