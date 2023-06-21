@@ -323,7 +323,7 @@ You can access the application UI at http://localhost:8080 and enter http://loca
 
 ### 5.1 Using DevTools with Testcontainers at Development Time
 During development, you can use Spring Boot DevTools to reload the code changes without having to completely restart the application.
-You can also configure your containers to reuse the existing containers by adding `@RefreshScope`.
+You can also configure your containers to reuse the existing containers by adding `@RestartScope`.
 
 First, Add `spring-boot-devtools` dependency.
 
@@ -344,7 +344,7 @@ testImplementation 'org.springframework.boot:spring-boot-devtools'
 </dependency>
 ```
 
-Next, add `@RefreshScope` annotation on container bean definition as follows:
+Next, add `@RestartScope` annotation on container bean definition as follows:
 
 ```java
 @TestConfiguration(proxyBeanMethods = false)
