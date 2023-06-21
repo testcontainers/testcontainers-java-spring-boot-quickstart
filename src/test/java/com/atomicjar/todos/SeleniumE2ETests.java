@@ -20,6 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.TestDescription;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +39,7 @@ public class SeleniumE2ETests {
     static File tempDir;
 
     @Container
-    static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>("selenium/standalone-chrome:4.6.0")
+    static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>("selenium/standalone-chrome:4.8.3")
             .withAccessToHost(true)
             .withRecordingMode(VncRecordingMode.RECORD_ALL, tempDir)
             .withRecordingFileFactory(new DefaultRecordingFileFactory())
@@ -49,6 +50,9 @@ public class SeleniumE2ETests {
     @BeforeAll
     static void beforeAll() {
         driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        System.out.println("Selenium remote URL is: " + chrome.getSeleniumAddress());
+        System.out.println("VNC URL is: " + chrome.getVncAddress());
     }
 
     @AfterAll

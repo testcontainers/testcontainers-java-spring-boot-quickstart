@@ -15,8 +15,7 @@
 	<description>Testcontainers Java and Spring Boot QuickStart</description>
 	<properties>
 		<java.version>17</java.version>
-		<testcontainers.version>1.18.1</testcontainers.version>
-		<selenium.version>4.6.0</selenium.version>
+		<testcontainers.version>1.18.3</testcontainers.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -73,8 +72,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-remote-driver</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-chrome-driver</artifactId>
-			<version>${selenium.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -83,17 +86,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers-bom</artifactId>
-				<version>${testcontainers.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<build>
 		<plugins>
