@@ -1,4 +1,4 @@
-name: Maven CI Build
+name: Gradle CI Build
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - '**'
 jobs:
   build:
-    name: Maven Build
+    name: Gradle Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,13 +16,13 @@ jobs:
         with:
           java-version: 17
           distribution: 'temurin'
-          cache: 'maven'
+          cache: 'gradle'
 
       - name: Setup Testcontainers Cloud Client
         uses: atomicjar/testcontainers-cloud-setup-action@v1
         with:
           token: ${{ secrets.TC_CLOUD_TOKEN }}
 
-      - name: Build with Maven
-        run: ./mvnw verify
+      - name: Build with Gradle
+        run: ./gradlew package
 
