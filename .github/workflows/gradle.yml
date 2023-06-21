@@ -24,5 +24,5 @@ jobs:
           token: ${{ secrets.TC_CLOUD_TOKEN }}
 
       - name: Build with Gradle
-        run: ./gradlew package
+        run: ./gradlew build
 
