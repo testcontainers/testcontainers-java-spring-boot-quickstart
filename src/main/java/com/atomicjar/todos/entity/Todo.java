@@ -1,7 +1,6 @@
 package com.atomicjar.todos.entity;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import jakarta.persistence.*;
 
@@ -64,7 +63,4 @@ public class Todo {
         this.order = order;
     }
 
-    public String getUrl() {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().toUriString() + "/todos/" + this.getId();
-    }
 }

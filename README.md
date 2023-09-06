@@ -53,7 +53,7 @@ Following are the Testcontainers and RestAssured dependencies:
 **build.gradle**
 ```groovy 
 ext {
-    set('testcontainersVersion', "1.18.1")
+    set('testcontainersVersion', "1.19.0")
 }
 
 dependencies {
@@ -83,7 +83,7 @@ For Maven build the Testcontainers and RestAssured dependencies are configured i
   <properties>
     ...
     ...
-    <testcontainers.version>1.18.1</testcontainers.version>
+    <testcontainers.version>1.19.0</testcontainers.version>
   </properties>
   <dependencies>
     ...
@@ -114,8 +114,9 @@ For Maven build the Testcontainers and RestAssured dependencies are configured i
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <dependencyManagement>
+  <dependencyManagement> 
     <dependencies>
+      <!-- If you are using Spring Boot 3.1.0+ then you don't need to configure testcontainers-bom -->
       <dependency>
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers-bom</artifactId>

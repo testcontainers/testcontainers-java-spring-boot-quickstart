@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/todos")
@@ -33,9 +34,10 @@ public class TodoController {
     public ResponseEntity<Todo> save(@Valid @RequestBody Todo todo) {
         todo.setId(null);
         Todo savedTodo = repository.save(todo);
+        String uriLocation = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString() + "/todos/" + savedTodo.getId();
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header("Location", savedTodo.getUrl())
+                .header("Location", uriLocation)
                 .body(savedTodo);
     }
 
